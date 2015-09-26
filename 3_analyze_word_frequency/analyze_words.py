@@ -10,24 +10,39 @@ def main():
 
 
 # function that will read in each word from the source_text and returns
-# a list of strings - will strip any puntcuation attached to the end of
+# a list of strings - will strip any punctuation attached to the end of
 def read_in_file(source_text):
+    # read file and append each word to list_of_all
     read_file = source_text.read()
     list_of_all = read_file.split(' ')
-    print('TYPE OF LIST', type(list_of_all))
 
-    # check end of each word to make sure there's no punctuation included
+    # initialize empty array for stripped words
+    filtered_words = []
 
-    for i in range(1000, 1050):
+    # get number of all words
+    num_of_words = len(list_of_all)
+    last_index = num_of_words - 1
+
+    for i in range(0, 20):
+        # loop through words and delete punctuation
         current_word = list_of_all[i]
-        
-        print(current_word)
 
-    print()
-    return
+        # if last char of current_word is not a letter, remove char
+        if current_word.isalpha() is False:
+            current_word = current_word[:-1]
+
+        # if current_word is at least one char, convert all letters to
+        # lower case and add to filtered_words
+        if len(current_word) != 0:
+            filtered_words.append(current_word.lower())
+    return filtered_words
 
 
 def histogram(source_text):
+    filtered_words = read_in_file(source_text)
+    for i in range(0, len(filtered_words)):
+        print(filtered_words[i])
+
     return
 
 
@@ -38,4 +53,4 @@ def unique_words():
 def frequency():
     return
 
-read_in_file(source_text)
+histogram(source_text)
