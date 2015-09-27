@@ -97,6 +97,7 @@ def frequency(word, in_histogram):
             frequency_of_word = in_histogram[i][1]
     return frequency_of_word
 
+# diagnostics - test functionality
 returned_histogram = histogram(source_text)
 print('NUM OF UNIQUE WORDS:', unique_words(returned_histogram))
 print('FREQUENCY OF TEST', frequency('test', returned_histogram))
