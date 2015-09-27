@@ -1,17 +1,12 @@
 import sys
-import string
 
 # open text file passed through as CL arg
 source_text = open(sys.argv[1])
 
 
-def main():
-    return
-
-
-# function that will read in each word from the source_text and returns
-# a list of strings - will strip any punctuation attached to the end of
-def read_in_file(source_text):
+# reads in each word from source_text & returns list of strings
+# will strip any punctuation attached to words
+def read_in_data(source_text):
     # read file and append each word to list_of_all
     read_file = source_text.read()
     list_of_all = read_file.split(' ')
@@ -19,68 +14,92 @@ def read_in_file(source_text):
     # initialize empty array for stripped words
     filtered_words = []
 
-    # get number of all words
-    num_of_words = len(list_of_all)
-    last_index = num_of_words - 1
+    # iterate through list_of_all and strip punctuation where
+    # needed. append stripped words to filtered_words
+    for i in range(0, len(list_of_all)):
+        # get word of current index and convert to lower case
+        current_word = list_of_all[i].lower()
 
-    for i in range(0, last_index):
-        # loop through words and delete punctuation
-        current_word = list_of_all[i]
-        print('WORD', current_word)
-
-        # if last char of current_word is not a letter, remove char
+        # if the entire word is not alphabetic, strip word of
+        # punctuation and append to filtered_words
         if current_word.isalpha() is False:
-            print('CURRENT WORD', current_word)
-            # check first char & remove if non letter
-            if current_word[:1].isalpha() is False:
-                current_word = current_word[1:]
-                print(current_word)
-            elif current_word[:-1].isalpha() is False:
-                current_word = current_word[:-1]
-                print(current_word)
+            # if first char of word is not alphabetic, remove first
+            # char and append to filterd_words
+            if current_word[0].isalpha() is False:
+                filtered_words.append(current_word[1:])
+            # if last char of word is not alphabetic, remove last
+            # char and append to filtered_words
+            elif current_word[-1:].isalpha() is False:
+                filtered_words.append(current_word[:-1])
+            # if punctuation was in the middle of word, leave as is
             else:
-                print(current_word)
-                continue
-            # check last char & remove if non letter
-            # current_word = current_word[:-1]
-
-        # if current_word is at least one char, convert all letters to
-        # lower case and add to filtered_words
-        if len(current_word) > 0:
+                filtered_words.append(current_word)
+        # if there is no punctuation in word, append word as is
+        # to filtered_words
+        else:
             filtered_words.append(current_word)
+
     return filtered_words
 
 
+# strips word of unnecessary punctuation and returns stripped_word
+def strip_punctuation(word):
+    stripped_word = 'BLANK'
+    return stripped_word
+
+
+# takes a source_text argument & returns a histogram data struct that
+# stores each unique word along w/ the # of times the word appears
 def histogram(source_text):
-    read_file = source_text.read()
-    all_words = read_file.split(' ')
+    # get filtered_words_list
+    filtered_words_list = read_in_data(source_text)
+    # add first word to out_histogram with a frequency of 1
+    out_histogram = [[filtered_words_list[0], 1]]
+    # Boolean to indicate if word exists in out_histogram
+    new_word = True
 
-    histogram = []
-    found_match = False
+    # iterate through the rest of filtered_words_list and append if
+    # word is not currently in out_histogram or increment frequency
+    for i in range(1, len(filtered_words_list)):
+        # iterate through out_histogram list
+        for j in range(0, len(out_histogram)):
+            # if the current word is the same as the current word in
+            # out_histogram, increment frequency by 1
+            if filtered_words_list[i] == out_histogram[j][0]:
+                out_histogram[j][1] += 1
+                new_word = False
+                break
+            # else, it is a new word
+            else:
+                new_word = True
+        # if it is a new word, append the word w/ a frequency of 1
+        if new_word is True:
+            out_histogram.append([filtered_words_list[i], 1])
 
-    histogram.append([all_words[0], 1])
+    for i in range(0, len(out_histogram)):
+        print(out_histogram[i])
 
-    for i in range(1, len(all_words)):
-        current_word = all_words[i]
-        for j in range(0, len(histogram)):
-            word_to_compare = histogram[j][0]
-            if current_word == word_to_compare:
-                histogram[j][1] += 1
-                found_match = True
-        if found_match is False:
-            histogram.append([current_word, 1])
-        else:
-            i += 1
-
-    print(histogram)
-    return
+    return out_histogram
 
 
-def unique_words():
-    return
+# takes a histogram and returns the total count of unique words
+def unique_words(in_histogram):
+    return len(in_histogram)
 
 
-def frequency():
-    return
+# takes a word and histogram and returns number of times that word
+# appears in a text
+def frequency(word, in_histogram):
+    frequency_of_word = 0
 
-histogram(source_text)
+    for i in range(0, len(in_histogram)):
+        if word == in_histogram[i][0]:
+            frequency_of_word = in_histogram[i][1]
+    return frequency_of_word
+
+returned_histogram = histogram(source_text)
+print('NUM OF UNIQUE WORDS:', unique_words(returned_histogram))
+print('FREQUENCY OF TEST', frequency('test', returned_histogram))
+print('FREQUENCY OF HELLO', frequency('hello', returned_histogram))
+print('FREQUENCY OF BILBO', frequency('bilbo', returned_histogram))
+print('FREQUENCY OF THIS', frequency('this', returned_histogram))
