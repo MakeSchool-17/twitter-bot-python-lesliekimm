@@ -23,25 +23,37 @@ def read_in_file(source_text):
     num_of_words = len(list_of_all)
     last_index = num_of_words - 1
 
-    for i in range(0, 20):
+    for i in range(0, last_index):
         # loop through words and delete punctuation
         current_word = list_of_all[i]
-
+        print('WORD', current_word)
+        
         # if last char of current_word is not a letter, remove char
         if current_word.isalpha() is False:
-            current_word = current_word[:-1]
+            print('CURRENT WORD', current_word)
+            # check first char & remove if non letter
+            if current_word[:1].isalpha() is False:
+                current_word = current_word[1:]
+                print(current_word)
+            elif current_word[:-1].isalpha() is False:
+                current_word = current_word[:-1]
+                print(current_word)
+            else:
+                print(current_word)
+                continue
+            # check last char & remove if non letter
+            # current_word = current_word[:-1]
 
         # if current_word is at least one char, convert all letters to
         # lower case and add to filtered_words
-        if len(current_word) != 0:
-            filtered_words.append(current_word.lower())
+        if len(current_word) > 0:
+            filtered_words.append(current_word)
     return filtered_words
 
 
 def histogram(source_text):
     filtered_words = read_in_file(source_text)
-    for i in range(0, len(filtered_words)):
-        print(filtered_words[i])
+
 
     return
 
