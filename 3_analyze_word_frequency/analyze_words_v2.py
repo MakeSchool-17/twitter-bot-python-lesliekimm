@@ -51,20 +51,42 @@ def strip_punctuation(word):
 # takes a source_text argument & returns a histogram data struct that
 # stores each unique word along w/ the # of times the word appears
 def histogram(source_text):
+    # get filtered_words_list
     filtered_words_list = read_in_data(source_text)
+    # add first word to out_histogram with a frequency of 1
+    out_histogram = [[filtered_words_list[0], 1]]
+    # Boolean to indicate if word exists in out_histogram
+    new_word = False
 
-    print('IN HISTOGRAM')
-    for i in range(0, len(filtered_words_list)):
-        print(filtered_words_list[i])
+    # iterate through the rest of filtered_words_list and append if
+    # word is not currently in out_histogram or increment frequency
+    for i in range(1, len(filtered_words_list)):
+        # iterate through out_histogram list
+        for j in range(0, len(out_histogram)):
+            # if the current word is the same as the current word in
+            # out_histogram, increment frequency by 1
+            if filtered_words_list[i] == out_histogram[j][0]:
+                out_histogram[j][1] += 1
+            # else, it is a new word
+            else:
+                new_word = True
+        # if it is a new word, append the word w/ a frequency of 1
+        if new_word is True:
+            out_histogram.append([filtered_words_list[i], 1])
+
+    for i in range(0, len(out_histogram)):
+        print(out_histogram[i])
 
     return out_histogram
 
 
+# takes a histogram and returns the total count of unique words
 def unique_words(in_histogram):
-    return
+    return len(in_histogram)
 
 
 def frequency(word, in_histogram):
     return
 
-histogram(source_text)
+returned_histogram = histogram(source_text)
+print('NUM OF UNIQUE WORDS:', unique_words(returned_histogram))
