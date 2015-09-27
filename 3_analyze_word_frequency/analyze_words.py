@@ -27,7 +27,7 @@ def read_in_file(source_text):
         # loop through words and delete punctuation
         current_word = list_of_all[i]
         print('WORD', current_word)
-        
+
         # if last char of current_word is not a letter, remove char
         if current_word.isalpha() is False:
             print('CURRENT WORD', current_word)
@@ -52,9 +52,27 @@ def read_in_file(source_text):
 
 
 def histogram(source_text):
-    filtered_words = read_in_file(source_text)
+    read_file = source_text.read()
+    all_words = read_file.split(' ')
 
+    histogram = []
+    found_match = False
 
+    histogram.append([all_words[0], 1])
+
+    for i in range(1, len(all_words)):
+        current_word = all_words[i]
+        for j in range(0, len(histogram)):
+            word_to_compare = histogram[j][0]
+            if current_word == word_to_compare:
+                histogram[j][1] += 1
+                found_match = True
+        if found_match is False:
+            histogram.append([current_word, 1])
+        else:
+            i += 1
+
+    print(histogram)
     return
 
 
