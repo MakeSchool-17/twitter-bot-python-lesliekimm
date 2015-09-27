@@ -17,7 +17,8 @@ def read_in_data(source_text):
     # iterate through list_of_all and strip punctuation where
     # needed. append stripped words to filtered_words
     for i in range(0, len(list_of_all)):
-        current_word = list_of_all[i]
+        # get word of current index and convert to lower case
+        current_word = list_of_all[i].lower()
 
         # if the entire word is not alphabetic, strip word of
         # punctuation and append to filtered_words
