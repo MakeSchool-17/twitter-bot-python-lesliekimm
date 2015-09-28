@@ -73,19 +73,36 @@ def histogram(source_text):
                 new_word = True
         # if it is a new word, append the word w/ a frequency of 1
         if new_word is True:
-            out_histogram.append([filtered_words_list[i], 1])
+            if len(filtered_words_list[i]) > 0:
+                out_histogram.append([filtered_words_list[i], 1])
 
-    # for diagnostics
-    print('NUM OF UNIQUE WORDS:', len(out_histogram))
     return out_histogram
+
+
+# takes a histogram and returns the total count of unique words
+def unique_words(in_histogram):
+    return len(in_histogram)
+
+
+# takes a word and histogram and returns number of times that word
+# appears in a text
+def frequency(word, in_histogram):
+    frequency_of_word = 0
+
+    for i in range(0, len(in_histogram)):
+        if word == in_histogram[i][0]:
+            frequency_of_word = in_histogram[i][1]
+    return frequency_of_word
 
 
 # takes a histogram and returns any word at random - does not take probability
 # into account
 def randomWord(in_histogram):
+    # get the last index of the histogram
     last_index = len(in_histogram) - 1
+    # generate a random number in the range of the length of the histogram
     random_index = random.randint(0, last_index)
-
+    # get the word from the random selected index
     word_to_return = in_histogram[random_index][0]
 
     return word_to_return
@@ -93,32 +110,50 @@ def randomWord(in_histogram):
 
 # prove randomness of randomWord function for small body of text
 def proveRandom(in_histogram):
+    # initialize new histogram that will keep track of number of times a
+    # specific word is generated
     occurance_list = [[randomWord(in_histogram), 1]]
+    # Boolean used to keep track of whether a randomly generated word is
+    # currently in the occurance_list histogram
     new_word = True
 
+    # iterate through 10000 times (hardcoding in large sample size)
     for i in range(0, 9999):
+        # generate a new random word
         new_random_word = randomWord(in_histogram)
+        # iterate through words in occurance_list
         for j in range(0, len(occurance_list)):
+            # if the new word is in the list, increase the frequency by 1
+            # and set new_word to False
             if new_random_word == occurance_list[j][0]:
                 occurance_list[j][1] += 1
                 new_word = False
                 break
+            # if the new word is not in th elist, set new_word to True
             else:
                 new_word = True
+
+        # if it is a new word, append it to the occurance_list histogram with
+        # a frequency of 1
         if new_word is True:
-            occurance_list.append([new_random_word, 1])
+            if len(new_random_word) > 0:
+                occurance_list.append([new_random_word, 1])
 
     return occurance_list
 
+# diagnostics
+# create histogram with sample text
 generated_histogram = histogram(source_text)
+# test randomWord function
 print('RANDOM WORD:', randomWord(generated_histogram))
-num_of_unique_words = len(generated_histogram)
+# get number of unique words & print
+num_of_unique_words = unique_words(generated_histogram)
 print(num_of_unique_words)
-
+# run proveRandom function
 occurance_histogram = proveRandom(generated_histogram)
 print('PROVE RANDOM:')
-print('EACH WORD HAS ~', 1/num_of_unique_words * 100, '% CHANCE')
+uniform_percentage = 1/num_of_unique_words * 100
+print('EACH WORD HAS ~', round(uniform_percentage, 2), '% CHANCE')
 for i in range(0, len(occurance_histogram)):
     percentage = (occurance_histogram[i][1]/10000) * 100
     print(occurance_histogram[i][0], ":", round(percentage, 2), "%")
-# print('PROVE RANDOM:', proveRandom(generated_histogram))

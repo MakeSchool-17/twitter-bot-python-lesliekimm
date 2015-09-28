@@ -74,7 +74,8 @@ def histogram(source_text):
                 new_word = True
         # if it is a new word, append the word w/ a frequency of 1
         if new_word is True:
-            out_histogram.append([filtered_words_list[i], 1])
+            if len(filtered_words_list[i]) > 0:
+                out_histogram.append([filtered_words_list[i], 1])
 
     for i in range(0, len(out_histogram)):
         print(out_histogram[i])
