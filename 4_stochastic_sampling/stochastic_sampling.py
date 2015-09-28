@@ -142,20 +142,31 @@ def prove_random(in_histogram):
     return occurance_list
 
 
+# returns a randomly selected word based on its frequency in text file
 def weighted_sampling(in_histogram):
+    # initialize variables
     total_num_of_words = 0
     end_index = -1
+    # this array will indicate the last 'indice' assigned to each word
+    # based on a word's frequncy in a text file
     end_index_array = []
 
+    # iterate through in_histogram and use the frequency of each word to
+    # get the total_num_of_words
     for i in range(0, len(in_histogram)):
         total_num_of_words += in_histogram[i][1]
 
+    # iterate through in_histogram and use the frequency to calculate last
+    # index for each word and append to end_index_array
     for j in range(0, len(in_histogram)):
         end_index += in_histogram[j][1]
         end_index_array.append(end_index)
 
+    # select a random index in the correct range
     random_weighted_index = random.randint(0, total_num_of_words - 1)
 
+    # iterate through end_index_array until the correct index is found and
+    # return the corresponding word from in_histogram
     for k in range(0, len(end_index_array)):
         if random_weighted_index <= end_index_array[k]:
             word_to_return = in_histogram[k][0]
