@@ -48,12 +48,6 @@ def read_in_data(source_text):
     return filtered_words
 
 
-# strips word of unnecessary punctuation and returns stripped_word
-def strip_punctuation(word):
-    stripped_word = 'BLANK'
-    return stripped_word
-
-
 # takes a source_text argument & returns a histogram data struct that
 # stores each unique word along w/ the # of times the word appears
 def histogram(source_text):
