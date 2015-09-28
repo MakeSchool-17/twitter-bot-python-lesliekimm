@@ -97,7 +97,7 @@ def frequency(word, in_histogram):
 
 # takes a histogram and returns any word at random - does not take probability
 # into account
-def randomWord(in_histogram):
+def random_word(in_histogram):
     # get the last index of the histogram
     last_index = len(in_histogram) - 1
     # generate a random number in the range of the length of the histogram
@@ -109,10 +109,10 @@ def randomWord(in_histogram):
 
 
 # prove randomness of randomWord function for small body of text
-def proveRandom(in_histogram):
+def prove_random(in_histogram):
     # initialize new histogram that will keep track of number of times a
     # specific word is generated
-    occurance_list = [[randomWord(in_histogram), 1]]
+    occurance_list = [[random_word(in_histogram), 1]]
     # Boolean used to keep track of whether a randomly generated word is
     # currently in the occurance_list histogram
     new_word = True
@@ -120,7 +120,7 @@ def proveRandom(in_histogram):
     # iterate through 10000 times (hardcoding in large sample size)
     for i in range(0, 9999):
         # generate a new random word
-        new_random_word = randomWord(in_histogram)
+        new_random_word = random_word(in_histogram)
         # iterate through words in occurance_list
         for j in range(0, len(occurance_list)):
             # if the new word is in the list, increase the frequency by 1
@@ -141,19 +141,45 @@ def proveRandom(in_histogram):
 
     return occurance_list
 
+
+def weighted_sampling(in_histogram):
+    total_num_of_words = 0
+    end_index = -1
+    end_index_array = []
+
+    for i in range(0, len(in_histogram)):
+        total_num_of_words += in_histogram[i][1]
+
+    for j in range(0, len(in_histogram)):
+        end_index += in_histogram[j][1]
+        end_index_array.append(end_index)
+
+    random_weighted_index = random.randint(0, total_num_of_words - 1)
+
+    for k in range(0, len(end_index_array)):
+        if random_weighted_index <= end_index_array[k]:
+            word_to_return = in_histogram[k][0]
+            break
+
+    return word_to_return
+
 # diagnostics
 # create histogram with sample text
 generated_histogram = histogram(source_text)
-# test randomWord function
-print('RANDOM WORD:', randomWord(generated_histogram))
+# test random_word function
+print('RANDOM WORD:', random_word(generated_histogram))
 # get number of unique words & print
 num_of_unique_words = unique_words(generated_histogram)
 print(num_of_unique_words)
-# run proveRandom function
-occurance_histogram = proveRandom(generated_histogram)
+
+# run prove_random function
+occurance_histogram = prove_random(generated_histogram)
 print('PROVE RANDOM:')
 uniform_percentage = 1/num_of_unique_words * 100
 print('EACH WORD HAS ~', round(uniform_percentage, 2), '% CHANCE')
 for i in range(0, len(occurance_histogram)):
     percentage = (occurance_histogram[i][1]/10000) * 100
     print(occurance_histogram[i][0], ":", round(percentage, 2), "%")
+
+# run weighted_sampling function
+print('WEIGHTED RANDOM WORD:', weighted_sampling(generated_histogram))
