@@ -11,7 +11,8 @@ def read_in_data(source_text):
     # read file and append each word to list_of_all
     read_file = source_text.read()
     # list_of_all = read_file.split(' ')
-    list_of_all = re.split('\s|(?<!\d)[,.]|[,.](?!\d)', read_file)
+    # list_of_all = re.split('\s|(?<!\d)[,.]|[,.](?!\d)', read_file)
+    list_of_all = re.split('\s|[?!.,;()"_:]+', read_file)
 
     # initialize empty array for stripped words
     filtered_words = []
