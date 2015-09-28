@@ -75,6 +75,8 @@ def histogram(source_text):
         if new_word is True:
             out_histogram.append([filtered_words_list[i], 1])
 
+    # for diagnostics
+    print('NUM OF UNIQUE WORDS:', len(out_histogram))
     return out_histogram
 
 
@@ -84,9 +86,39 @@ def randomWord(in_histogram):
     last_index = len(in_histogram) - 1
     random_index = random.randint(0, last_index)
 
-    word_to_return = (in_histogram[random_index])[0]
+    word_to_return = in_histogram[random_index][0]
 
     return word_to_return
 
+
+# prove randomness of randomWord function for small body of text
+def proveRandom(in_histogram):
+    occurance_list = [[randomWord(in_histogram), 1]]
+    new_word = True
+
+    for i in range(0, 9999):
+        new_random_word = randomWord(in_histogram)
+        for j in range(0, len(occurance_list)):
+            if new_random_word == occurance_list[j][0]:
+                occurance_list[j][1] += 1
+                new_word = False
+                break
+            else:
+                new_word = True
+        if new_word is True:
+            occurance_list.append([new_random_word, 1])
+
+    return occurance_list
+
 generated_histogram = histogram(source_text)
 print('RANDOM WORD:', randomWord(generated_histogram))
+num_of_unique_words = len(generated_histogram)
+print(num_of_unique_words)
+
+occurance_histogram = proveRandom(generated_histogram)
+print('PROVE RANDOM:')
+print('EACH WORD HAS ~', 1/num_of_unique_words * 100, '% CHANCE')
+for i in range(0, len(occurance_histogram)):
+    percentage = (occurance_histogram[i][1]/10000) * 100
+    print(occurance_histogram[i][0], ":", round(percentage, 2), "%")
+# print('PROVE RANDOM:', proveRandom(generated_histogram))
