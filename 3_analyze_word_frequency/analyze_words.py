@@ -1,4 +1,5 @@
 import sys
+import re
 
 # open text file passed through as CL arg
 source_text = open(sys.argv[1])
@@ -9,7 +10,8 @@ source_text = open(sys.argv[1])
 def read_in_data(source_text):
     # read file and append each word to list_of_all
     read_file = source_text.read()
-    list_of_all = read_file.split(' ')
+    # list_of_all = read_file.split(' ')
+    list_of_all = re.split('\s|(?<!\d)[,.]|[,.](?!\d)', read_file)
 
     # initialize empty array for stripped words
     filtered_words = []
@@ -20,24 +22,27 @@ def read_in_data(source_text):
         # get word of current index and convert to lower case
         current_word = list_of_all[i].lower()
 
-        # if the entire word is not alphabetic, strip word of
-        # punctuation and append to filtered_words
-        if current_word.isalpha() is False:
-            # if first char of word is not alphabetic, remove first
-            # char and append to filterd_words
-            if current_word[0].isalpha() is False:
-                filtered_words.append(current_word[1:])
-            # if last char of word is not alphabetic, remove last
-            # char and append to filtered_words
-            elif current_word[-1:].isalpha() is False:
-                filtered_words.append(current_word[:-1])
-            # if punctuation was in the middle of word, leave as is
+        if len(current_word) == 0:
+            continue
+        else:
+            # if the entire word is not alphabetic, strip word of
+            # punctuation and append to filtered_words
+            if current_word.isalpha() is False:
+                # if first char of word is not alphabetic, remove first
+                # char and append to filterd_words
+                if current_word[0].isalpha() is False:
+                    filtered_words.append(current_word[1:])
+                # if last char of word is not alphabetic, remove last
+                # char and append to filtered_words
+                elif current_word[-1:].isalpha() is False:
+                    filtered_words.append(current_word[:-1])
+                # if punctuation was in the middle of word, leave as is
+                else:
+                    filtered_words.append(current_word)
+                    # if there is no punctuation in word, append word as is
+                    # to filtered_words
             else:
                 filtered_words.append(current_word)
-        # if there is no punctuation in word, append word as is
-        # to filtered_words
-        else:
-            filtered_words.append(current_word)
 
     return filtered_words
 
