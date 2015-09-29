@@ -181,7 +181,7 @@ generated_histogram = histogram(source_text)
 print('RANDOM WORD:', random_word(generated_histogram))
 # get number of unique words & print
 num_of_unique_words = unique_words(generated_histogram)
-print(num_of_unique_words)
+print('NUM OF UNIQUE WORDS', num_of_unique_words)
 
 # run prove_random function
 occurance_histogram = prove_random(generated_histogram)
