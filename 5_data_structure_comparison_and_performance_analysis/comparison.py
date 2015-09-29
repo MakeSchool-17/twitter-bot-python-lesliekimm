@@ -52,26 +52,35 @@ def read_in_data(source_text):
 def histogram_tuple(source_text):
     # get filtered_words_list
     filtered_words_list = read_in_data(source_text)
+    # get length of list
     length_of_list = len(filtered_words_list)
+    # initialize empty array
     tuple_histogram = []
-    new_word = True
 
     # iterate through the rest of filtered_words_list and append if
     # word is not currently in out_histogram or increment frequency
     while length_of_list > 0:
+        # get the first word curently in the list
         current_word = filtered_words_list[0]
+        # set frequency of that word to 1
         frequency_of_word = 1
-        if len(current_word) == 0:
+
+        # iterate through the rest of the list & increase frequency
+        # for each word found
+        for i in range(1, length_of_list):
+            if current_word == filtered_words_list[i]:
+                frequency_of_word += 1
+        # iterate through list and remove the current_word
+        for j in range(0, frequency_of_word):
             filtered_words_list.remove(current_word)
-            length_of_list -= frequency_of_word
-        else:
-            for i in range(1, length_of_list):
-                if current_word == filtered_words_list[i]:
-                    frequency_of_word += 1
-            for j in range(0, frequency_of_word):
-                filtered_words_list.remove(current_word)
+
+        # deprecate the length_of_list by the frequency_of_word
+        length_of_list -= frequency_of_word
+
+        # if the length of the current_word is greater than 0, append
+        # a tuple of the word and frequency to tuple_histogram
+        if len(current_word) > 0:
             tuple_histogram.append([current_word, frequency_of_word])
-            length_of_list -= frequency_of_word
 
     return tuple_histogram
 
