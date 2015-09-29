@@ -46,14 +46,17 @@ def read_in_data(source_text):
 
     return filtered_words
 
+# get filtered_words_list
+filtered_words_list = read_in_data(source_text)
+
 
 # takes a source_text argument & return a histogram data struct that stores
 # each unique word along w/ the # of times the word appears as a tuple
 def histogram_tuple(source_text):
     # get filtered_words_list
-    filtered_words_list = read_in_data(source_text)
+    list_to_use = filtered_words_list
     # get length of list
-    length_of_list = len(filtered_words_list)
+    length_of_list = len(list_to_use)
     # initialize empty array
     tuple_histogram = []
 
@@ -61,18 +64,18 @@ def histogram_tuple(source_text):
     # word is not currently in out_histogram or increment frequency
     while length_of_list > 0:
         # get the first word curently in the list
-        current_word = filtered_words_list[0]
+        current_word = list_to_use[0]
         # set frequency of that word to 1
         frequency_of_word = 1
 
         # iterate through the rest of the list & increase frequency
         # for each word found
         for i in range(1, length_of_list):
-            if current_word == filtered_words_list[i]:
+            if current_word == list_to_use[i]:
                 frequency_of_word += 1
         # iterate through list and remove the current_word
         for j in range(0, frequency_of_word):
-            filtered_words_list.remove(current_word)
+            list_to_use.remove(current_word)
 
         # deprecate the length_of_list by the frequency_of_word
         length_of_list -= frequency_of_word
@@ -85,16 +88,67 @@ def histogram_tuple(source_text):
     return tuple_histogram
 
 
-print('HISTOGRAM TABLE', histogram_tuple(source_text))
+# takes a word and histogram arguments and returns the frequency count
+def frequency_tuple(word, in_histogram):
+    for i in range(0, len(in_histogram)):
+        if word == in_histogram[i][0]:
+            return in_histogram[i][1]
+    return None
 
 
 def histogram_dictionary(source_text):
-    dictionary_histogram = []
+    # get filtered_words_list
+    list_to_use = filtered_words_list
+    # get length of list
+    length_of_list = len(list_to_use)
+    # initialize empty array
+    dictionary_histogram = {}
+
+    # iterate through the rest of filtered_words_list and append if
+    # word is not currently in out_histogram or increment frequency
+    while length_of_list > 0:
+        # get the first word curently in the list
+        current_word = list_to_use[0]
+        # set frequency of that word to 1
+        frequency_of_word = 1
+
+        # iterate through the rest of the list & increase frequency
+        # for each word found
+        for i in range(1, length_of_list):
+            if current_word == list_to_use[i]:
+                frequency_of_word += 1
+        # iterate through list and remove the current_word
+        for j in range(0, frequency_of_word):
+            list_to_use.remove(current_word)
+
+        # deprecate the length_of_list by the frequency_of_word
+        length_of_list -= frequency_of_word
+
+        # if the length of the current_word is greater than 0, append
+        # a tuple of the word and frequency to tuple_histogram
+        if len(current_word) > 0:
+            dictionary_histogram[current_word] = frequency_of_word
 
     return dictionary_histogram
+
+
+def frequency_dictionary(word, in_histogram):
+    return None
 
 
 def histogram_sorted(source_text):
     sorted_histogram = []
 
     return sorted_histogram
+
+
+def frequency_sorted(word, in_histogram):
+    return None
+
+# tupleH = histogram_tuple(source_text)
+dictionaryH = histogram_dictionary(source_text)
+# print('HISTOGRAM TUPLE', tupleH)
+# print('FREQUENCY OF HELLO', frequency_tuple('hello', tupleH))
+# print('FREQUENCY OF BYE', frequency_tuple('bye', tupleH))
+# print('FREQUENCY OF THIS', frequency_tuple('this', tupleH))
+print('HISTOGRAM DICTIONARY', type(dictionaryH), dictionaryH)
