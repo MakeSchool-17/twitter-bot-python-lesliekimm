@@ -60,7 +60,7 @@ def histogram_tuple(source_text):
     # initialize empty array
     tuple_histogram = []
 
-    # iterate through the rest of filtered_words_list and append if
+    # iterate through the rest of list_to_use and append if
     # word is not currently in out_histogram or increment frequency
     while length_of_list > 0:
         # get the first word curently in the list
@@ -104,7 +104,7 @@ def histogram_dictionary(source_text):
     # initialize empty array
     dictionary_histogram = {}
 
-    # iterate through the rest of filtered_words_list and append if
+    # iterate through the rest of list_to_use and append if
     # word is not currently in out_histogram or increment frequency
     while length_of_list > 0:
         # get the first word curently in the list
@@ -132,23 +132,40 @@ def histogram_dictionary(source_text):
     return dictionary_histogram
 
 
+# takes a word and histogram arguments and returns the frequency count
 def frequency_dictionary(word, in_histogram):
+    for key, value in in_histogram.items():
+        if word == key:
+            return value
     return None
 
 
-def histogram_sorted(source_text):
-    sorted_histogram = []
+class Node(object):
+    def __init__(self, data = None, next_node = None):
+        self.data = data
+        self.next_node = next_node
+        
 
-    return sorted_histogram
 
-
+# takes a word and histogram arguments and returns the frequency count
 def frequency_sorted(word, in_histogram):
+    for i in range(0, len(in_histogram)):
+        if word == in_histogram[i][0]:
+            return in_histogram[i][1]
     return None
 
 # tupleH = histogram_tuple(source_text)
+# print('FREQUENCY OF HELLO', frequency_sorted('hello', sortedH))
+# print('FREQUENCY OF BYE', frequency_sorted('bye', sortedH))
+# print('FREQUENCY OF THIS', frequency_sorted('this', sortedH))
 dictionaryH = histogram_dictionary(source_text)
+print('FREQUENCY OF HELLO', frequency_dictionary('hello', dictionaryH))
+print('FREQUENCY OF BYE', frequency_dictionary('bye', dictionaryH))
+print('FREQUENCY OF THIS', frequency_dictionary('this', dictionaryH))
+print('HISTOGRAM SORTED', type(dictionaryH), dictionaryH)
+# sortedH = histogram_sorted(source_text)
 # print('HISTOGRAM TUPLE', tupleH)
-# print('FREQUENCY OF HELLO', frequency_tuple('hello', tupleH))
-# print('FREQUENCY OF BYE', frequency_tuple('bye', tupleH))
-# print('FREQUENCY OF THIS', frequency_tuple('this', tupleH))
-print('HISTOGRAM DICTIONARY', type(dictionaryH), dictionaryH)
+# print('FREQUENCY OF HELLO', frequency_sorted('hello', sortedH))
+# print('FREQUENCY OF BYE', frequency_sorted('bye', sortedH))
+# print('FREQUENCY OF THIS', frequency_sorted('this', sortedH))
+# print('HISTOGRAM SORTED', type(sortedH), sortedH)
