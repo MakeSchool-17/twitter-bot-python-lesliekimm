@@ -1,8 +1,7 @@
 import sys
 import re
 
-
-# source_text = open(sys.argv[1])
+source_text = open(sys.argv[1])
 
 
 # create a Node class that will hold a word, the frequency of the word
@@ -27,15 +26,39 @@ class LinkedList:
     # words with the same frequency
     def insert(self, word, frequency):
         new_node = Node(word, frequency)
+        temp = self.head
 
+        # if the list is empty, set head to new_node
         if self.head is None:
             self.head = new_node
-            self.size += 1
-        else:
-            temp_node = self.head
+        # if the new word's freqency is less than the head, insert at head
+        elif new_node.frequency < temp.frequency:
+            new_node.next = temp
             self.head = new_node
-            new_node.next = temp_node
-            self.size += 1
+            # if the new word's freqency is equal to the head, insert at head
+        elif new_node.frequency is temp.frequency:
+            new_node.next = temp
+            self.head = new_node
+        # if frequencies are the same, put in alphabetical order
+        else:
+            temp2 = temp
+            temp = temp.next
+            while temp.next is not None:
+                if new_node.frequency < temp.frequency:
+                    temp2.next = new_node
+                    new_node.next = temp
+                    break
+                temp = temp.next
+                temp2 = temp2.next
+            if new_node.frequency <= temp.frequency:
+                temp2.next = new_node
+                new_node.next = temp
+            else:
+                temp.next = new_node
+
+        # increment the size of the list
+        self.size += 1
+        return
 
     # print the list, frequency followed by the word
     def print_list(self):
@@ -43,9 +66,63 @@ class LinkedList:
         while temp is not None:
             print('%10s' % temp.frequency, '  ', temp.word)
             temp = temp.next
+        return
+
+    # return frequency of a word
+    def frequency(self, word):
+        temp = self.head
+        thing_to_return = 0
+
+        while temp is not None:
+            print(temp.word, word, temp)
+            if temp.word is word:
+                thing_to_return = temp.frequency
+                break
+            else:
+                temp = temp.next
+
+        return thing_to_return
 
 
-source_text = open(sys.argv[1])
+# takes a source_text argument & return a histogram data struct that stores
+# each unique word along w/ the # of times the word appears as a tuple
+def main(source_text):
+    # get filtered_words_list
+    list_to_use = read_in_data(source_text)
+    # get length of list
+    length_of_list = len(list_to_use)
+    # initialize empty array
+    ordered_linked_list = LinkedList()
+
+    # iterate through the rest of list_to_use and append if
+    # word is not currently in out_histogram or increment frequency
+    while length_of_list > 0:
+        # get the first word curently in the list
+        current_word = list_to_use[0]
+        # set frequency of that word to 1
+        frequency_of_word = 1
+
+        # iterate through the rest of the list & increase frequency
+        # for each word found
+        for i in range(1, length_of_list):
+            if current_word == list_to_use[i]:
+                frequency_of_word += 1
+        # iterate through list and remove the current_word
+        for j in range(0, frequency_of_word):
+            list_to_use.remove(current_word)
+
+        # deprecate the length_of_list by the frequency_of_word
+        length_of_list -= frequency_of_word
+
+        # if the length of the current_word is greater than 0, append
+        # a tuple of the word and frequency to tuple_histogram
+        if len(current_word) > 0:
+            ordered_linked_list.insert(current_word, frequency_of_word)
+
+    ordered_linked_list.print_list()
+    print('size of list', ordered_linked_list.size)
+    print('frequency hello', ordered_linked_list.frequency('this'))
+    return
 
 
 # reads in each word from source_text & returns list of strings
@@ -53,8 +130,6 @@ source_text = open(sys.argv[1])
 def read_in_data(source_text):
     # read file and append each word to list_of_all
     read_file = source_text.read()
-    # list_of_all = read_file.split(' ')
-    # list_of_all = re.split('\s|(?<!\d)[,.]|[,.](?!\d)', read_file)
     list_of_all = re.split('\s|[?!.,;()"_:]+', read_file)
 
     # initialize empty array for stripped words
@@ -90,49 +165,4 @@ def read_in_data(source_text):
 
     return filtered_words
 
-
-# takes a source_text argument & return a histogram data struct that stores
-# each unique word along w/ the # of times the word appears as a tuple
-def histogram_tuple(source_text):
-    # get filtered_words_list
-    list_to_use = read_in_data(source_text)
-    # get length of list
-    length_of_list = len(list_to_use)
-    # initialize empty array
-    ordered_linked_list = LinkedList()
-
-    # iterate through the rest of list_to_use and append if
-    # word is not currently in out_histogram or increment frequency
-    while length_of_list > 0:
-        # get the first word curently in the list
-        current_word = list_to_use[0]
-        # set frequency of that word to 1
-        frequency_of_word = 1
-
-        # iterate through the rest of the list & increase frequency
-        # for each word found
-        for i in range(1, length_of_list):
-            if current_word == list_to_use[i]:
-                frequency_of_word += 1
-        # iterate through list and remove the current_word
-        for j in range(0, frequency_of_word):
-            list_to_use.remove(current_word)
-
-        # deprecate the length_of_list by the frequency_of_word
-        length_of_list -= frequency_of_word
-
-        # if the length of the current_word is greater than 0, append
-        # a tuple of the word and frequency to tuple_histogram
-        if len(current_word) > 0:
-            ordered_linked_list.insert(current_word, frequency_of_word)
-
-    ordered_linked_list.print_list()
-
-    return ordered_linked_list
-
-myLinkedList = LinkedList()
-myLinkedList.insert('hello', 5)
-myLinkedList.insert('goodbye', 13)
-myLinkedList.print_list()
-
-histogram_tuple(source_text)
+main(source_text)
