@@ -5,7 +5,7 @@ class Node:
     def __init__(self, key=None, value=None, next=None):
         self.key = key                  # word
         self.value = value              # frequency
-        self.next = None
+        self.next = None                # pointer to next Node
 
     # set the value of a Node object's member value
     def set_value(self, value):
@@ -23,14 +23,15 @@ class Node:
         return
 
 
-# class Linked Lisk create instances of Linked Lists of Node objects with
+# class Linked Lisk create instances of lists of Node objects with
 # head and size variables.
 class LinkedList:
     # instantiates a LinkedList object with default value of None for head
     # and size 0
     def __init__(self, head=None, size=0):
-        self.head = None        # reference to first Node in LinkedList
-        self.size = 0           # number of Nodes in LinkedList
+        self.head = None                # reference to first Node in LinkedList
+        self.tail = None                # reference to last Node in LinkedList
+        self.size = 0                   # number of Nodes in LinkedList
 
     # inserts a Node object at the head of the LinkedList with key and value
     # members of Node set to parameters passed in
@@ -43,6 +44,7 @@ class LinkedList:
         # if the current LinkedList is empty, set head to new_node
         if self.is_empty():
             self.head = new_node
+            self.tail = new_node
         # if current LinkedList is not empty, insert node at the beginning
         # of LinkedList
         else:
@@ -50,6 +52,25 @@ class LinkedList:
             self.head = new_node
         # increment size of LinkedList
         self.size += 1
+        return
+
+    # search for key in LinkedList and remove the corresponding Node
+    def delete(self, key):
+        # create a reference to LinkedList head
+        temp = self.head
+
+        if self.head is self.tail:
+            if temp.key is key:
+                self.head = None
+                self.tail = None
+                self.size = 0
+            else:
+                print('ERROR: In LINKEDLIST class: ' + key + ' not found.')
+                return
+
+
+        self.size -= 1
+
         return
 
     # searches LinkedList for key value passed in as paraemter and returns
@@ -117,31 +138,123 @@ class LinkedList:
         return
 
 
+# class HashTable creates lists of LinkedList objects with buckets_lists, keys
+# values and size variables
 class HashTable:
-    def __init__(self, size=None):
-        self.buckets_list = []
-        self.keys = []
-        self.values = []
-        self.size = size
+    # creates a HashTable that initializes empty LinkedLists for each index
+    # in buckets_lists, empty lists for keys and values, sets size to
+    # paramerter passed in, sets num_of_items to 0 and sets empty to True
+    def __init__(self, size=0):
+        self.buckets_list = []          # list of buckets of LinkedLists
+        self.keys = []                  # list of all keys (words)
+        self.values = []                # list of all values (frequencies)
+        self.size = size                # number of pointers in buckets_list
+        self.num_of_items = 0           # number of Nodes in entire HashTable
+        self.empty = True               # indicates if HashTable is empty
 
+        # initialize buckets_list to be length of size passed in and
+        # initialize a LinkedList object for each index of buckets_list
         for i in range(0, size):
             self.buckets_list.append(LinkedList())
 
+    # returns number of total key-value pairs entered
+    def return_num_of_items(self):
+        return self.num_of_items
+
+    # returns a list of all keys
+    def return_keys(self):
+        return self.keys
+
+    # returns a list of all values
+    def return_values(self):
+        return self.values
+
+    # insert key and value into correct bucket after hashing key, update
+    # key and values list to include new key and value, increment size
     def insert(self, key, value):
+        # calculate hashed_key and determine which bucket key-value pair
+        # will go into
         hashed_key = hash(key) % self.size
+        # insert into appropriate index
         self.buckets_list[hashed_key].insert(key, value)
+        # add key to list of all keys
+        self.keys.append(key)
+        # add value ot list of all values
+        self.values.append(value)
+        # increment numOfItems
+        self.num_of_items += 1
+        # set empty variable to False
+        self.empty = False
         return
 
-    def update_value(self, key, new_value):
+    # search for key in HashTable and return the value
+    def get(self, key):
+        # hash the key and find the correct LinkedList to search
         hashed_key = hash(key) % self.size
-        linked_list_to_update = self.buckets_list[hashed_key]
-        if linked_list_to_update.head is None:
-            print('WARNING: In HASHTABLE class: Key not found. Nothing ' +
-                  'to update.')
-        else:
-            node_to_update = linked_list_to_update.search(key)
-            node_to_update.set_value(new_value)
+        list_to_search = self.buckets_list[hashed_key]
 
+        # print error if list is empty
+        if list_to_search.is_empty():
+            print('ERROR: In HASHTABLE class: Searching incorrect list.')
+            return None
+        # if LinkedList is not empty, traverse list and return value for key
+        else:
+            # create a reference to LinkedList head
+            temp = list_to_search.head
+
+            # traverse through list until key is found
+            while temp is not None:
+                if temp.key is key:
+                    return temp.value
+                temp = temp.next
+            # if key is not found, print an error message
+            else:
+                print('ERROR: In HASHTABLE class: ' + key + ' not found.')
+                return None
+
+    # update the value of the key passed in with the new_value and update
+    # the values list
+    def update_value(self, key, new_value):
+        # hash the key and find the correct LinkedList to search
+        hashed_key = hash(key) % self.size
+        list_to_update = self.buckets_list[hashed_key]
+
+        # update values list in the correct place
+        for i in range(0, self.size):
+            if self.keys[i] is key:
+                self.values[i] = new_value
+
+        # print error if list is empty
+        if list_to_update.is_empty():
+            print('ERROR: In HASHTABLE class: Searching incorrect list.')
+            return
+        # if LinkedList is not empty, search for key and replace value
+        else:
+            # create reference to Node with correct key
+            ref_to_node = list_to_update.search(key)
+            if ref_to_node is not None:
+                # assign new value
+                ref_to_node.value = new_value
+            return
+
+    # returns True if HashTable is empty and false otherwise
+    def is_empty(self):
+        return self.empty
+
+    # print HashTable
+    def print_hash_table(self):
+        # if HashTable is empty, print warning
+        if self.empty:
+            print('WARNING: In HASHTABLE class: Hash Table is empty. ' +
+                  'Nothing to print.')
+        # if HashTable is not empty, print each bucket's LinkedList
+        else:
+            for i in range(0, self.size):
+                # print contents of bucket if it's LinkedList is not empty
+                if self.buckets_list[i].is_empty() is False:
+                    print('Bucket number: ', i)
+                    self.buckets_list[i].print_list()
+        return
 
 if __name__ == '__main__':
     def test_node():
@@ -151,28 +264,28 @@ if __name__ == '__main__':
         arm = Node('arm', 2)
         leg = Node('leg', 21)
 
-        head.print_node()
-        arm.print_node()
-        leg.print_node()
+        head.print_node()                       # should print 10
+        arm.print_node()                        # should print 2
+        leg.print_node()                        # should print 21
 
         head.set_value(7)
         arm.set_value(3)
         leg.set_value(13)
 
         print('Updated Nodes:')
-        head.print_node()
-        arm.print_node()
-        leg.print_node()
+        head.print_node()                       # should print 7
+        arm.print_node()                        # should print 3
+        leg.print_node()                        # should print 13
 
         print('Testing return_value function:')
-        print('head', head.return_value())
-        print('arm', arm.return_value())
-        print('leg', leg.return_value())
+        print('head', head.return_value())      # should print 7
+        print('arm', arm.return_value())        # shold print 3
+        print('leg', leg.return_value())        # should print 13
         return
 
     def test_linked_list():
         # test LinkedList class
-        print('Testing LinkedList class:')
+        print('\nTesting LinkedList class:')
         body = LinkedList()
 
         print('Testing is_empty function:')
@@ -205,11 +318,61 @@ if __name__ == '__main__':
         body.print_list()                       # should print 20, 6, 33
 
         print('Testing update_value function for key not in LinkedList:')
-        body.update_value('thigh', 2)           # should print error
+        body.update_value('thigh', 2)           # should print two errors
         return
 
-    def test_hash_tables():
+    def test_hash_table():
+        # test HashTable class
+        print('\nTesting HashTable class')
+        # create a HashTable with 10 buckets
+        test = HashTable(10)
+
+        print('Testing print_hash_table for empty HashTable:')
+        test.print_hash_table()             # print warning
+
+        print('Testing insert function:')
+        test.insert('blue', 3)
+        test.insert('green', 14)
+        test.insert('orange', 2)
+        test.insert('yellow', 4)
+        test.insert('gold', 1)
+        test.insert('black', 23)
+        test.insert('white', 31)
+        test.insert('red', 2)
+        test.insert('purple', 30)
+        test.insert('brown', 22)
+        test.insert('grey', 16)
+        test.insert('silver', 8)
+        test.print_hash_table()             # should print table
+
+        print('Testing return_num_of_items function:')
+        print('Num of items: ', test.return_num_of_items())     # print 12
+
+        print('Testing get function:')
+        print('Value of black is: ', test.get('black'))         # print 23
+        print('Value of blue is: ', test.get('blue'))           # print 3
+        print('Value of silver is: ', test.get('silver'))       # print 8
+        print('Value of gray is: ', test.get('gray'))           # print error
+
+        print('Testing return_keys function:')
+        for i in range(0, test.num_of_items):
+            print(test.keys[i])
+
+        print('Testing return_vaules function:')
+        for i in range(0, test.num_of_items):
+            print(test.values[i])
+
+        print('Testing update_value function:')
+        test.update_value('orange', 15)
+        test.print_hash_table()
+
+        print('Testing update_value function for non-existing key:')
+        test.update_value('gray', 33)
+        test.print_hash_table()
+        for i in range(0, test.num_of_items):
+            print(test.values[i])
         return
 
     # test_node()
     test_linked_list()
+    # test_hash_table()
