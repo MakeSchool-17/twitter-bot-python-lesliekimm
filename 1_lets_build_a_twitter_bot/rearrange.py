@@ -1,5 +1,3 @@
-# sys will allow access to command line arguments
-# random will allow for shuffling
 import sys
 import random
 
@@ -9,7 +7,6 @@ cl_args = sys.argv[1:]
 random.shuffle(cl_args)
 
 # iterate through command line arguments and print
-# separated by spaces
 for i in cl_args:
     print(i, end=" ")
 
