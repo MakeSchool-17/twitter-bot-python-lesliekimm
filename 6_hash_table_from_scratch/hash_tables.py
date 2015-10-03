@@ -54,7 +54,8 @@ class LinkedList:
         self.size += 1
         return
 
-    # search for key in LinkedList and remove the corresponding Node
+    # search for key in LinkedList and remove the corresponding Node and
+    # return True if Node deleted and False otherwise
     def delete(self, key):
         # create a reference to the head
         temp = self.head
@@ -62,14 +63,14 @@ class LinkedList:
         # if LinkedList is empty, print error message and return None
         if self.is_empty():
             print('ERROR: In LINKEDLIST class: There is nothing in this list.')
-            return
+            return False
         # if LinkedList is not empty, delete Node and update size
         else:
             # if the first Node contains key, update head and decrement size
             if temp.key is key:
                 self.head = self.head.next
                 self.size -= 1
-                return
+                return True
             # otherwise, traverse through LinkedList
             else:
                 # create a trailing reference pointer
@@ -81,7 +82,7 @@ class LinkedList:
                     if temp.key is key:
                         temp2.next = temp.next
                         self.size -= 1
-                        return
+                        return True
                     # otherwise, set both temp and temp2 to the next variable
                     else:
                         temp2 = temp
@@ -90,7 +91,7 @@ class LinkedList:
                 if temp is None:
                     print('ERROR: In LINKEDLIST class: ' + key + ' not ' +
                           'found. Nothing to delete.')
-        return
+        return False
 
     # searches LinkedList for key value passed in as paraemter and returns
     # a pointer to the corresponding Node
@@ -156,6 +157,31 @@ class LinkedList:
                 temp = temp.next
         return
 
+    def print_keys(self):
+        temp = self.head
+
+        # if LinkedList is emmpty, print warning
+        if self.is_empty():
+            print('WARNING: In LINKEDLIST class. Nothing to print.')
+        # if LinkedList is not empty, traverse through list and print node
+        else:
+            while temp is not None:
+                print(temp.key)
+                temp = temp.next
+        return
+
+    def print_values(self):
+        temp = self.head
+
+        # if LinkedList is emmpty, print warning
+        if self.is_empty():
+            print('WARNING: In LINKEDLIST class. Nothing to print.')
+        # if LinkedList is not empty, traverse through list and print node
+        else:
+            while temp is not None:
+                print(temp.values)
+                temp = temp.next
+        return
 
 # class HashTable creates lists of LinkedList objects with buckets_lists, keys
 # values and size variables
@@ -182,7 +208,10 @@ class HashTable:
 
     # returns a list of all keys
     def return_keys(self):
-        return self.keys
+        # change this to return keys!
+        for i in range(0, self.size):
+            self.buckets_list[i].print_keys()
+        return
 
     # returns a list of all values
     def return_values(self):
@@ -217,7 +246,13 @@ class HashTable:
             return
         # if LinkedList is not empty, traverse list and delete correct Node
         else:
-            list_to_search.delete(key)
+            node_deleted = list_to_search.delete(key)
+            if node_deleted:
+                for i in range(0, self.size + 1):
+                    if self.keys[i] is key:
+                        temp_list = self.values
+                        self.num_of_items -= 1
+                        return
             return
 
     # search for key in HashTable and return the value
@@ -409,8 +444,7 @@ if __name__ == '__main__':
         print('Value of gray is: ', test.get('gray'))           # print error
 
         print('Testing return_keys function:')
-        for i in range(0, test.num_of_items):
-            print(test.keys[i])
+        test.return_keys()
 
         print('Testing return_vaules function:')
         for i in range(0, test.num_of_items):
@@ -430,6 +464,11 @@ if __name__ == '__main__':
         test.delete('brown')
         test.delete('silver')
         test.print_hash_table()
+        test.return_keys()
+
+        print('Testing return_vaules function:')
+        for i in range(0, test.num_of_items):
+            print(test.values[i])
         return
 
     # test_node()
