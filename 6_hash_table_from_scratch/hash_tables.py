@@ -54,8 +54,7 @@ class LinkedList:
         self.size += 1
         return
 
-    # search for key in LinkedList and remove the corresponding Node and
-    # return True if Node deleted and False otherwise
+    # search for key in LinkedList and remove the corresponding Node
     def delete(self, key):
         # create a reference to the head
         temp = self.head
@@ -63,14 +62,14 @@ class LinkedList:
         # if LinkedList is empty, print error message and return None
         if self.is_empty():
             print('ERROR: In LINKEDLIST class: There is nothing in this list.')
-            return False
+            return
         # if LinkedList is not empty, delete Node and update size
         else:
             # if the first Node contains key, update head and decrement size
             if temp.key is key:
                 self.head = self.head.next
                 self.size -= 1
-                return True
+                return
             # otherwise, traverse through LinkedList
             else:
                 # create a trailing reference pointer
@@ -82,7 +81,7 @@ class LinkedList:
                     if temp.key is key:
                         temp2.next = temp.next
                         self.size -= 1
-                        return True
+                        return
                     # otherwise, set both temp and temp2 to the next variable
                     else:
                         temp2 = temp
@@ -91,7 +90,7 @@ class LinkedList:
                 if temp is None:
                     print('ERROR: In LINKEDLIST class: ' + key + ' not ' +
                           'found. Nothing to delete.')
-        return False
+        return
 
     # searches LinkedList for key value passed in as paraemter and returns
     # a pointer to the corresponding Node
@@ -157,31 +156,35 @@ class LinkedList:
                 temp = temp.next
         return
 
-    def print_keys(self):
+    # traverse through list and append key of each Node to list_of_keys and
+    # return list_of_keys
+    def return_keys(self):
+        # create reference to the head
         temp = self.head
+        # initialize an empty array
+        list_of_keys = []
 
-        # if LinkedList is emmpty, print warning
-        if self.is_empty():
-            print('WARNING: In LINKEDLIST class. Nothing to print.')
-        # if LinkedList is not empty, traverse through list and print node
-        else:
-            while temp is not None:
-                print(temp.key)
-                temp = temp.next
-        return
+        # traverse through list and append key of each Node to list_of_keys
+        while temp is not None:
+            list_of_keys.append(temp.key)
+            temp = temp.next
 
-    def print_values(self):
+        return list_of_keys
+
+    # traverse through list and append key of each Node to list_of_values and
+    # return list_of_values
+    def return_values(self):
+        # create reference to the head
         temp = self.head
+        # initialize an empty array
+        list_of_values = []
 
-        # if LinkedList is emmpty, print warning
-        if self.is_empty():
-            print('WARNING: In LINKEDLIST class. Nothing to print.')
-        # if LinkedList is not empty, traverse through list and print node
-        else:
-            while temp is not None:
-                print(temp.values)
-                temp = temp.next
-        return
+        # traverse through list and append key of each Node to list_of_values
+        while temp is not None:
+            list_of_values.append(temp.value)
+            temp = temp.next
+
+        return list_of_values
 
 # class HashTable creates lists of LinkedList objects with buckets_lists, keys
 # values and size variables
@@ -191,8 +194,6 @@ class HashTable:
     # paramerter passed in, sets num_of_items to 0 and sets empty to True
     def __init__(self, size=0):
         self.buckets_list = []          # list of buckets of LinkedLists
-        self.keys = []                  # list of all keys (words)
-        self.values = []                # list of all values (frequencies)
         self.size = size                # number of pointers in buckets_list
         self.num_of_items = 0           # number of Nodes in entire HashTable
         self.empty = True               # indicates if HashTable is empty
@@ -206,17 +207,6 @@ class HashTable:
     def return_num_of_items(self):
         return self.num_of_items
 
-    # returns a list of all keys
-    def return_keys(self):
-        # change this to return keys!
-        for i in range(0, self.size):
-            self.buckets_list[i].print_keys()
-        return
-
-    # returns a list of all values
-    def return_values(self):
-        return self.values
-
     # insert key and value into correct bucket after hashing key, update
     # key and values list to include new key and value, increment size
     def insert(self, key, value):
@@ -226,10 +216,6 @@ class HashTable:
         # insert into appropriate index
         self.buckets_list[hashed_key].insert(key, value)
         # add key to list of all keys
-        self.keys.append(key)
-        # add value ot list of all values
-        self.values.append(value)
-        # increment numOfItems
         self.num_of_items += 1
         # set empty variable to False
         self.empty = False
@@ -246,13 +232,8 @@ class HashTable:
             return
         # if LinkedList is not empty, traverse list and delete correct Node
         else:
-            node_deleted = list_to_search.delete(key)
-            if node_deleted:
-                for i in range(0, self.size + 1):
-                    if self.keys[i] is key:
-                        temp_list = self.values
-                        self.num_of_items -= 1
-                        return
+            list_to_search.delete(key)
+            self.num_of_items -= 1
             return
 
     # search for key in HashTable and return the value
@@ -287,11 +268,6 @@ class HashTable:
         hashed_key = hash(key) % self.size
         list_to_update = self.buckets_list[hashed_key]
 
-        # update values list in the correct place
-        for i in range(0, self.size):
-            if self.keys[i] is key:
-                self.values[i] = new_value
-
         # print error if list is empty
         if list_to_update.is_empty():
             print('ERROR: In HASHTABLE class: Searching incorrect list.')
@@ -323,6 +299,28 @@ class HashTable:
                     print('Bucket number: ', i)
                     self.buckets_list[i].print_list()
         return
+
+    # return a list of all keys
+    def return_keys(self):
+        # initialize a list of keys
+        list_of_keys = []
+
+        # iterate through buckets and append each key from each bucket
+        for i in range(0, self.size):
+            list_of_keys = list_of_keys + self.buckets_list[i].return_keys()
+
+        return list_of_keys
+
+    # return a list of all values
+    def return_values(self):
+        # initialize a list of values
+        list_of_vals = []
+
+        # iterate through buckets and append each value from each bucket
+        for i in range(0, self.size):
+            list_of_vals = list_of_vals + self.buckets_list[i].return_values()
+
+        return list_of_vals
 
 if __name__ == '__main__':
     def test_node():
@@ -434,21 +432,29 @@ if __name__ == '__main__':
         test.insert('silver', 8)
         test.print_hash_table()             # should print table
 
+        print('Testing return_keys function')
+        print(test.return_keys())
+        print('Testing return_values function')
+        print(test.return_values())
+
+        print('Testing delete function:')
+        test.delete('brown')
+        test.delete('silver')
+        test.print_hash_table()
+
         print('Testing return_num_of_items function:')
         print('Num of items: ', test.return_num_of_items())     # print 12
+
+        print('Testing delete function:')
+        test.delete('brown')
+        test.delete('silver')
+        test.print_hash_table()
 
         print('Testing get function:')
         print('Value of black is: ', test.get('black'))         # print 23
         print('Value of blue is: ', test.get('blue'))           # print 3
         print('Value of silver is: ', test.get('silver'))       # print 8
         print('Value of gray is: ', test.get('gray'))           # print error
-
-        print('Testing return_keys function:')
-        test.return_keys()
-
-        print('Testing return_vaules function:')
-        for i in range(0, test.num_of_items):
-            print(test.values[i])
 
         print('Testing update_value function:')
         test.update_value('orange', 15)
@@ -457,18 +463,17 @@ if __name__ == '__main__':
         print('Testing update_value function for non-existing key:')
         test.update_value('gray', 33)
         test.print_hash_table()
-        for i in range(0, test.num_of_items):
-            print(test.values[i])
 
         print('Testing delete function:')
         test.delete('brown')
         test.delete('silver')
         test.print_hash_table()
-        test.return_keys()
 
-        print('Testing return_vaules function:')
-        for i in range(0, test.num_of_items):
-            print(test.values[i])
+        print('Testing return_keys function')
+        print(test.return_keys())
+        print('Testing return_values function')
+        print(test.return_values())
+
         return
 
     # test_node()
