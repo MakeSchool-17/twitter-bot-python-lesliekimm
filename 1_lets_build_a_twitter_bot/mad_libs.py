@@ -136,7 +136,7 @@ class MadLibs:
 
 
 if __name__ == '__main__':
-    myStory = MadLibs()
-    myStory.get_author()
-    myStory.get_input_words()
-    myStory.print_all()
+    my_story = MadLibs()
+    my_story.get_author()
+    my_story.get_input_words()
+    my_story.print_all()
