@@ -56,21 +56,40 @@ class LinkedList:
 
     # search for key in LinkedList and remove the corresponding Node
     def delete(self, key):
-        # create a reference to LinkedList head
+        # create a reference to the head
         temp = self.head
 
-        if self.head is self.tail:
+        # if LinkedList is empty, print error message and return None
+        if self.is_empty():
+            print('ERROR: In LINKEDLIST class: There is nothing in this list.')
+            return
+        # if LinkedList is not empty, delete Node and update size
+        else:
+            # if the first Node contains key, update head and decrement size
             if temp.key is key:
-                self.head = None
-                self.tail = None
-                self.size = 0
-            else:
-                print('ERROR: In LINKEDLIST class: ' + key + ' not found.')
+                self.head = self.head.next
+                self.size -= 1
                 return
-
-
-        self.size -= 1
-
+            # otherwise, traverse through LinkedList
+            else:
+                # create a trailing reference pointer
+                temp2 = temp
+                temp = temp.next
+                # traverse through list
+                while temp is not None:
+                    # when found, update temp2 next variable and decrement size
+                    if temp.key is key:
+                        temp2.next = temp.next
+                        self.size -= 1
+                        return
+                    # otherwise, set both temp and temp2 to the next variable
+                    else:
+                        temp2 = temp
+                        temp = temp.next
+                # if key was not found in LinkedList, print error message
+                if temp is None:
+                    print('ERROR: In LINKEDLIST class: ' + key + ' not ' +
+                          'found. Nothing to delete.')
         return
 
     # searches LinkedList for key value passed in as paraemter and returns
@@ -290,35 +309,56 @@ if __name__ == '__main__':
 
         print('Testing is_empty function:')
         if body.is_empty():
-            print('is_empty() works!')          # should print
+            print('is_empty() works!')  # should print
 
         print('Testing print_list function for empty LinkedList:')
-        body.print_list()                       # should print error message
+        body.print_list()               # should print error message
 
         body.insert('head', 14)
         body.insert('arm', 6)
         body.insert('leg', 2)
+        body.insert('eye', 13)
+        body.insert('mouth', 9)
 
         print('Testing insert and print_list function:')
-        body.print_list()                       # should print 2, 6 14
+        body.print_list()               # should print 9, 13, 2, 6 14
 
         print('Testing search function:')
         reference_pointer1 = body.search('head')
         reference_pointer2 = body.search('leg')
         reference_pointer1.set_value(1)
         reference_pointer2.set_value(12)
-        body.print_list()                       # should print 12, 6, 1
+        body.print_list()               # should print 12, 6, 1
 
         print('Testing search function for key not in LinkedList:')
         reference_pointer3 = body.search('chest')       # should print error
 
         print('Testing update_value function:')
-        body.update_value('leg', 20)
+        body.update_value('mouth', 20)
         body.update_value('head', 33)
-        body.print_list()                       # should print 20, 6, 33
+        body.print_list()               # should print 20, 13, 2,  6, 33
 
         print('Testing update_value function for key not in LinkedList:')
-        body.update_value('thigh', 2)           # should print two errors
+        body.update_value('thigh', 2)   # should print two errors
+
+        print('Testing delete function:')
+        body.delete('arm')
+        body.delete('head')
+        body.delete('mouth')
+        body.delete('leg')
+        body.delete('eye')
+        body.print_list()
+
+        print('Create new list to delete')
+        body.insert('hello', 23)
+        body.insert('goodbye', 1)
+        body.insert('morning', 19)
+        body.insert('evening', 7)
+        body.print_list()
+
+        body.delete('evening')
+        body.delete('hello')
+        body.print_list()
         return
 
     def test_hash_table():
