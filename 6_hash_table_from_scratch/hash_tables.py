@@ -206,6 +206,20 @@ class HashTable:
         self.empty = False
         return
 
+    def delete(self, key):
+        # hash the key and find the correct LinkedList to search
+        hashed_key = hash(key) % self.size
+        list_to_search = self.buckets_list[hashed_key]
+
+        # print error if list is empty
+        if list_to_search.is_empty():
+            print('ERROR: In HASHTABLE class: Searching incorrect list.')
+            return
+        # if LinkedList is not empty, traverse list and delete correct Node
+        else:
+            list_to_search.delete(key)
+            return
+
     # search for key in HashTable and return the value
     def get(self, key):
         # hash the key and find the correct LinkedList to search
@@ -411,8 +425,13 @@ if __name__ == '__main__':
         test.print_hash_table()
         for i in range(0, test.num_of_items):
             print(test.values[i])
+
+        print('Testing delete function:')
+        test.delete('brown')
+        test.delete('silver')
+        test.print_hash_table()
         return
 
     # test_node()
-    test_linked_list()
-    # test_hash_table()
+    # test_linked_list()
+    test_hash_table()
