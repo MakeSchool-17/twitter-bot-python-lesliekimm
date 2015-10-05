@@ -322,6 +322,18 @@ class HashTable:
 
         return list_of_vals
 
+    # overloads [] operator so that d[key] will return the corresponding value
+    # for key
+    def __getitem__(self, key):
+        hashed_key = hash(key) % self.size
+        bucket = self.buckets_list[hashed_key]
+
+        if bucket.is_empty():
+            raise KeyError('In HASHTABLE class: Searching incorrect list.')
+        else:
+            temp = bucket.search(key)
+            return temp.value
+
 if __name__ == '__main__':
     def test_node():
         # test Node class
@@ -473,6 +485,9 @@ if __name__ == '__main__':
         print(test.return_keys())
         print('Testing return_values function')
         print(test.return_values())
+
+        print('Testing overloaded [] operator')
+        print('Value of orange is: ', test['orange'])
 
         return
 
