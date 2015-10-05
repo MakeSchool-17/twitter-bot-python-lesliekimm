@@ -263,15 +263,14 @@ class HashTable:
 
     # update the value of the key passed in with the new_value and update
     # the values list
-    def update_value(self, key, new_value):
+    def __setitem__(self, key, new_value):
         # hash the key and find the correct LinkedList to search
         hashed_key = hash(key) % self.size
         list_to_update = self.buckets_list[hashed_key]
 
         # print error if list is empty
         if list_to_update.is_empty():
-            print('ERROR: In HASHTABLE class: Searching incorrect list.')
-            return
+            raise KeyError('In HASHTABLE class: Searching incorrect list.')
         # if LinkedList is not empty, search for key and replace value
         else:
             # create reference to Node with correct key
@@ -279,7 +278,8 @@ class HashTable:
             if ref_to_node is not None:
                 # assign new value
                 ref_to_node.value = new_value
-            return
+            else:
+                raise KeyError('In HASHTABLE class: Key does not exist.')
 
     # returns True if HashTable is empty and false otherwise
     def is_empty(self):
@@ -325,14 +325,19 @@ class HashTable:
     # overloads [] operator so that d[key] will return the corresponding value
     # for key
     def __getitem__(self, key):
+        # hash the key and find the correct LinkedList to search
         hashed_key = hash(key) % self.size
         bucket = self.buckets_list[hashed_key]
 
+        # raise KeyError if bucket is empty
         if bucket.is_empty():
             raise KeyError('In HASHTABLE class: Searching incorrect list.')
         else:
             temp = bucket.search(key)
-            return temp.value
+            if temp is not None:
+                return temp.value
+            else:
+                raise KeyError('In HASHTABLE class: Key does not exist.')
 
 if __name__ == '__main__':
     def test_node():
@@ -468,12 +473,14 @@ if __name__ == '__main__':
         print('Value of silver is: ', test.get('silver'))       # print 8
         print('Value of gray is: ', test.get('gray'))           # print error
 
-        print('Testing update_value function:')
-        test.update_value('orange', 15)
+        print('Testing update_value/overloaded assignment operator:')
+        # test.update_value('orange', 15)
+        test['orange'] = 15
         test.print_hash_table()
 
         print('Testing update_value function for non-existing key:')
-        test.update_value('gray', 33)
+        # test.update_value('gray', 33)
+        test['gray'] = 33
         test.print_hash_table()
 
         print('Testing delete function:')
@@ -488,6 +495,7 @@ if __name__ == '__main__':
 
         print('Testing overloaded [] operator')
         print('Value of orange is: ', test['orange'])
+        print('Value of brown is: ', test['brown'])             # print error
 
         return
 
