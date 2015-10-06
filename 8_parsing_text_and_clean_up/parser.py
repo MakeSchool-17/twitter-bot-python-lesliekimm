@@ -4,6 +4,7 @@ import unicodedata
 def parse_text(source_text):
     file_to_read = open(source_text, 'r')
     file_string = file_to_read.read()
+    file_string.replace('‘', "'")
 
     print(file_string)
     return
