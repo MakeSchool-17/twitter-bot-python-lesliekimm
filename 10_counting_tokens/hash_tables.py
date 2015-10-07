@@ -235,6 +235,7 @@ class HashTable:
     # paramerter passed in, sets num_of_items to 0 and sets empty to True
     def __init__(self, size=0):
         self.buckets_list = []          # list of buckets of LinkedLists
+        self.histogram = []             # histogram of key and value pairs
         self.size = size                # number of pointers in buckets_list
         self.num_of_items = 0           # number of Nodes in entire HashTable
         self.empty = True               # indicates if HashTable is empty
