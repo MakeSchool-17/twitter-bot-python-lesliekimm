@@ -2,8 +2,9 @@ import sys
 import re
 import random
 
-# hard code text file name to open
+# hard code text file name to open and number of words to make random senence
 SOURCE_TEXT = open('the_hobbit.txt')
+NUM_OF_WORDS = 10
 
 # if the name of a text file is passed in as command line argument, set
 # SOURCE_TEXT to argument
@@ -241,6 +242,7 @@ class HashTable:
         random_word = ''                    # initialize to empty string
         # pick a random index from 0 to current_end_index
         random_index = random.randint(0, self.current_end_index)
+        print(random_index)
 
         # iterate through distribution and if the random_index is less than
         # the index's current_end_index, return the index's key and break
@@ -265,6 +267,17 @@ class HashTable:
 
         return
 
+
+def generate_sentence(num_of_words, hash_table):
+    print('REDOOOOOOOO')
+    sentence = ''
+    distribution = hash_table.return_distribution()
+
+    for i in range(num_of_words):
+        word_to_add = hash_table.select_random_word(distribution)
+        sentence += word_to_add + ' '
+
+    return sentence
 
 if __name__ == "__main__":
     tokens = tokenize(SOURCE_TEXT)
@@ -293,7 +306,7 @@ if __name__ == "__main__":
         word = HT.select_random_word(hist)
         print(word)
 
-
+        print(generate_sentence(NUM_OF_WORDS, HT))
 
 
     def testHT():
