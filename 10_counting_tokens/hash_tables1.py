@@ -1,3 +1,85 @@
+import sys
+import re
+
+
+# hard code text file name to open
+SOURCE_TEXT = open('the_hobbit.txt')
+
+# if the name of a text file is passed in as command line argument, set
+# SOURCE_TEXT to argument
+if len(sys.argv) > 1:
+    SOURCE_TEXT = open(sys.argv[1])
+
+
+# take an opened file as an argument and read the content, split the words
+# and strip appropriate punctuation
+def tokenize(source_text):
+    # read the source_text passed in
+    read_file = source_text.read()
+    # split words and strip punctuation
+    words = re.split('\s|[!?.,;()"_:]+|', read_file)
+
+    # initialize empty tokens array
+    tokens = []
+
+    # iterate through words array and add string from each index to tokens
+    # array as long as it is not empty
+    for index in range(0, len(words)):
+        # get word of current indext
+        current_word = words[index]
+
+        # if current_word is empty, continue
+        if len(current_word) < 1:
+            continue
+        # otherwise, add to tokens array
+        else:
+            tokens.append(current_word)
+
+    return tokens
+
+
+class Histogram:
+    def __init__(self):
+        self.histogram = []
+        self.num_of_keys = 0
+        self.total_tokens = 0
+
+    def insert(self, key):
+        new_word = True
+
+        if self.num_of_keys is 0:
+            self.histogram.append([key, 1])
+            self.num_of_keys += 1
+            self.total_tokens += 1
+            return
+        else:
+            for index in range(len(self.histogram)):
+                if self.histogram[index][0] == key:
+                    self.histogram[index][1] += 1
+                    self.total_tokens += 1
+                    new_word = False
+                    break
+            if new_word is True:
+                self.histogram.append([key, 1])
+                self.num_of_keys += 1
+                self.total_tokens += 1
+        return
+
+    # go through items in tokens list and insert into histogram
+    def create_histogram(self, tokens):
+        # iterate through tokens list and insert
+        for index in range(len(tokens)):
+            self.insert(tokens[index])
+        return
+
+    # return number of unique words
+    def return_unique_words(self):
+        return self.num_of_keys
+
+    def return_total_tokens(self):
+        return self.total_tokens
+
+
 # class Node create instances of objects with key, value and next variables
 class Node:
     # instantiates a Node ojbect with default values of None for key, value
@@ -186,14 +268,16 @@ class LinkedList:
 
         return list_of_values
 
+
 # class HashTable creates lists of LinkedList objects with buckets_lists, keys
 # values and size variables
 class HashTable:
     # creates a HashTable that initializes empty LinkedLists for each index
     # in buckets_lists, empty lists for keys and values, sets size to
     # paramerter passed in, sets num_of_items to 0 and sets empty to True
-    def __init__(self, size=0):
+    def __init__(self, histogram=None, size=0):
         self.buckets_list = []          # list of buckets of LinkedLists
+        self.histogram = histogram      # histogram of key and value pairs
         self.size = size                # number of pointers in buckets_list
         self.num_of_items = 0           # number of Nodes in entire HashTable
         self.empty = True               # indicates if HashTable is empty
@@ -339,166 +423,22 @@ class HashTable:
             else:
                 raise KeyError('In HASHTABLE class: Key does not exist.')
 
+
 if __name__ == '__main__':
-    def test_node():
-        # test Node class
-        print('Testing Node class:')
-        head = Node('head', 10)
-        arm = Node('arm', 2)
-        leg = Node('leg', 21)
+    # create tokens list from SOURCE_TEXT
+    tokens = tokenize(SOURCE_TEXT)
 
-        head.print_node()                       # should print 10
-        arm.print_node()                        # should print 2
-        leg.print_node()                        # should print 21
+    # create Histogram from tokens
+    tokens_histogram = Histogram()
+    tokens_histogram.create_histogram(tokens)
 
-        head.set_value(7)
-        arm.set_value(3)
-        leg.set_value(13)
+    # create HashTable
+    hobbit_hash_table = HashTable(tokens_histogram, 10000)
+    # create HashTable with histogram
+    for index in range(len(tokens_histogram.histogram)):
+        current_pair = tokens_histogram.histogram[index]
+        hobbit_hash_table.insert(current_pair[0], current_pair[1])
 
-        print('Updated Nodes:')
-        head.print_node()                       # should print 7
-        arm.print_node()                        # should print 3
-        leg.print_node()                        # should print 13
+    hobbit_hash_table.print_hash_table()
 
-        print('Testing return_value function:')
-        print('head', head.return_value())      # should print 7
-        print('arm', arm.return_value())        # shold print 3
-        print('leg', leg.return_value())        # should print 13
-        return
-
-    def test_linked_list():
-        # test LinkedList class
-        print('\nTesting LinkedList class:')
-        body = LinkedList()
-
-        print('Testing is_empty function:')
-        if body.is_empty():
-            print('is_empty() works!')  # should print
-
-        print('Testing print_list function for empty LinkedList:')
-        body.print_list()               # should print error message
-
-        body.insert('head', 14)
-        body.insert('arm', 6)
-        body.insert('leg', 2)
-        body.insert('eye', 13)
-        body.insert('mouth', 9)
-
-        print('Testing insert and print_list function:')
-        body.print_list()               # should print 9, 13, 2, 6 14
-
-        print('Testing search function:')
-        reference_pointer1 = body.search('head')
-        reference_pointer2 = body.search('leg')
-        reference_pointer1.set_value(1)
-        reference_pointer2.set_value(12)
-        body.print_list()               # should print 12, 6, 1
-
-        print('Testing search function for key not in LinkedList:')
-        reference_pointer3 = body.search('chest')       # should print error
-
-        print('Testing update_value function:')
-        body.update_value('mouth', 20)
-        body.update_value('head', 33)
-        body.print_list()               # should print 20, 13, 2,  6, 33
-
-        print('Testing update_value function for key not in LinkedList:')
-        body.update_value('thigh', 2)   # should print two errors
-
-        print('Testing delete function:')
-        body.delete('arm')
-        body.delete('head')
-        body.delete('mouth')
-        body.delete('leg')
-        body.delete('eye')
-        body.print_list()
-
-        print('Create new list to delete')
-        body.insert('hello', 23)
-        body.insert('goodbye', 1)
-        body.insert('morning', 19)
-        body.insert('evening', 7)
-        body.print_list()
-
-        body.delete('evening')
-        body.delete('hello')
-        body.print_list()
-        return
-
-    def test_hash_table():
-        # test HashTable class
-        print('\nTesting HashTable class')
-        # create a HashTable with 10 buckets
-        test = HashTable(10)
-
-        print('Testing print_hash_table for empty HashTable:')
-        test.print_hash_table()             # print warning
-
-        print('Testing insert function:')
-        test.insert('blue', 3)
-        test.insert('green', 14)
-        test.insert('orange', 2)
-        test.insert('yellow', 4)
-        test.insert('gold', 1)
-        test.insert('black', 23)
-        test.insert('white', 31)
-        test.insert('red', 2)
-        test.insert('purple', 30)
-        test.insert('brown', 22)
-        test.insert('grey', 16)
-        test.insert('silver', 8)
-        test.print_hash_table()             # should print table
-
-        print('Testing return_keys function')
-        print(test.return_keys())
-        print('Testing return_values function')
-        print(test.return_values())
-
-        print('Testing delete function:')
-        test.delete('brown')
-        test.delete('silver')
-        test.print_hash_table()
-
-        print('Testing return_num_of_items function:')
-        print('Num of items: ', test.return_num_of_items())     # print 12
-
-        print('Testing delete function:')
-        test.delete('brown')
-        test.delete('silver')
-        test.print_hash_table()
-
-        print('Testing get function:')
-        print('Value of black is: ', test.get('black'))         # print 23
-        print('Value of blue is: ', test.get('blue'))           # print 3
-        print('Value of silver is: ', test.get('silver'))       # print 8
-        print('Value of gray is: ', test.get('gray'))           # print error
-
-        print('Testing update_value/overloaded assignment operator:')
-        # test.update_value('orange', 15)
-        test['orange'] = 15
-        test.print_hash_table()
-
-        print('Testing update_value function for non-existing key:')
-        # test.update_value('gray', 33)
-        test['gray'] = 33
-        test.print_hash_table()
-
-        print('Testing delete function:')
-        test.delete('brown')
-        test.delete('silver')
-        test.print_hash_table()
-
-        print('Testing return_keys function')
-        print(test.return_keys())
-        print('Testing return_values function')
-        print(test.return_values())
-
-        print('Testing overloaded [] operator')
-        print('Value of orange is: ', test['orange'])
-        print('Value of brown is: ', test['brown'])             # print error
-
-        return
-
-    # test_node()
-    # test_linked_list()
-    test_hash_table()
+    print('DONE')
