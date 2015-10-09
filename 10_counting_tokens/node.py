@@ -11,3 +11,15 @@ class Node:
     def __str__(self):
         str_to_return = '%10s' % self.data[1] + '  ' + self.data[0]
         return str_to_return
+
+    # return data of Node - ['key', value] list
+    def get_data(self):
+        return self.data
+
+    # return pointer to next
+    def get_next(self):
+        return self.next
+
+    # set next pointer
+    def set_next(self, new_next):
+        self.next = new_next
