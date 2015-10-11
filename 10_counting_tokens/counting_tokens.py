@@ -310,7 +310,6 @@ if __name__ == "__main__":
 
         print(generate_sentence(35, HT))
 
-
     def testHT():
         HT = HashTable()
         HT.insert('blue')
