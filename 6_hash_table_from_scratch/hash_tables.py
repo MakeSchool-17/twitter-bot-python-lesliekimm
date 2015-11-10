@@ -1,3 +1,6 @@
+# [brian] All the newlines in this file are awesome, they make it a LOT
+# easier to read.
+
 # class Node create instances of objects with key, value and next variables
 class Node:
     # instantiates a Node ojbect with default values of None for key, value
@@ -203,9 +206,16 @@ class HashTable:
         for i in range(0, size):
             self.buckets_list.append(LinkedList())
 
+        # [brian] For the above you could write:
+
+        self.buckets_list = [LinkedList() for _ in range(size)]
+
     # returns number of total key-value pairs entered
     def return_num_of_items(self):
         return self.num_of_items
+    # [brian] Since you're already using `__getitem__` and `__setitem__`,
+    # you could implement `__len__` instead of `return_number_of_items`,
+    # that would let you call `len(hash_table)`.
 
     # insert key and value into correct bucket after hashing key, update
     # key and values list to include new key and value, increment size
@@ -219,7 +229,8 @@ class HashTable:
         self.num_of_items += 1
         # set empty variable to False
         self.empty = False
-        return
+        return # [brian] You don't need this line, if you don't include a
+               # return statement python will return automatically.
 
     def delete(self, key):
         # hash the key and find the correct LinkedList to search
@@ -264,6 +275,11 @@ class HashTable:
     # update the value of the key passed in with the new_value and update
     # the values list
     def __setitem__(self, key, new_value):
+        # [brian] Nice! Using things like __setitem__ makes your code
+        # so much nicer and easier to read. magic methods let you take
+        # advantage of the cool syntax I'm sure you're already missing
+        # in the obj-c coding you're doing now.
+
         # hash the key and find the correct LinkedList to search
         hashed_key = hash(key) % self.size
         list_to_update = self.buckets_list[hashed_key]
@@ -308,6 +324,15 @@ class HashTable:
         # iterate through buckets and append each key from each bucket
         for i in range(0, self.size):
             list_of_keys = list_of_keys + self.buckets_list[i].return_keys()
+
+        return list_of_keys
+
+        # [brian] for this you could write:
+
+        list_of_keys = []
+
+        for bucket in self.buckets_list:
+            list_of_keys.extend(bucket.return_keys())
 
         return list_of_keys
 

@@ -18,6 +18,8 @@ def get_article(article_url):
     params = {'token': DIFFBOT_DEV_TOKEN,
               'url': article_url,
               'discussion': 'false'}
+    # [brian] Nice! Making a dict before passing it in to another function,
+    # while not necessary, makes the code to much easier to read
 
     print(params)
 
@@ -46,6 +48,19 @@ if __name__ == '__main__':
         corpus += article
 
     output_file.write(corpus)                       # write corpus to file
+
+    # [brian] Careful, you forgot to close the file! In this program it'll get
+    # closed when the script finishes, but in a larger program this could be a
+    # pretty terrible mistake! Try writing:
+
+    with open('corpus.txt', 'w') as output_file:
+        output_file.write(corpus)
+        print('Corpus saved to {}'.format(output_file.name))
+
+    # and by the time the program reaches this line, the file will already
+    # be closed.
+
+
     # print diagnostics
     print('Corpus saved to {}'.format(output_file.name))
     print(datetime.datetime.now())

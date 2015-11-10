@@ -37,6 +37,19 @@ def tokenize(source_text):
 
     return tokens
 
+    # [brian] Instead of the above you could have written:
+
+    for index, word in enumerate(words):
+        if word:
+            tokens.append(word)
+
+    # Handling indices is something which comes up a lot and is very easy to
+    # accidentally get wrong, so python goes out of its way to provide lots of
+    # helpers that stop you from having to play with `index`. `enumerate` is
+    # one of them and it's soooo nice
+
+    return tokens
+
 
 if __name__ == '__main__':
     tokens = tokenize(SOURCE_TEXT)
@@ -44,3 +57,7 @@ if __name__ == '__main__':
     # print all tokens
     for i in range(0, len(tokens)):
         print(tokens[i])
+
+    # [brian] Instead of the above you could have written:
+    for token in tokens:
+        print(token)

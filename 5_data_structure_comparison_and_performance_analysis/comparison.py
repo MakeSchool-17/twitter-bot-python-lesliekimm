@@ -139,6 +139,10 @@ def frequency_dictionary(word, in_histogram):
             return value
     return None
 
+    # [brian] Instead of the above you could call:
+    return in_histogram.get(word)
+    # which will return None if word is not in the dictionary
+
 
 tupleH = histogram_tuple(source_text)
 print(tupleH)
